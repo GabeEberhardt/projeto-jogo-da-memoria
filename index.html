@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<!-- viewport-fit=cover permite usar a tela inteira no celular (o CSS cuida das áreas seguras) -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jogo da Memória</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<h1>Jogo da Memória</h1>
+
+<!-- Barra de controles: nível, botão de iniciar e cronômetro -->
+<div class="bar">
+  <select id="level" aria-label="Dificuldade">
+    <option value="facil">Fácil · 6 cartas</option>
+    <option value="medio">Médio · 12 cartas</option>
+    <option value="dificil">Difícil · 16 cartas</option>
+  </select>
+  <button id="start">Iniciar</button>
+  <span id="timer">00:00</span>
+</div>
+
+<!-- Mensagem de orientação para o jogador -->
+<p id="hint">Escolha o nível e clique em Iniciar.</p>
+
+<!-- As cartas são criadas pelo script.js dentro desta grade -->
+<div id="grid"></div>
+
+<!-- Tabela de estatísticas (preenchida pelo script.js) -->
+<section id="stats" aria-label="Estatísticas">
+  <table>
+    <thead><tr><th>Nível</th><th>Vitórias</th><th>Derrotas</th><th>Melhor tempo</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</section>
+</main>
+
+<!-- Caixa de diálogo exibida ao vencer ou ao esgotar o tempo -->
+<dialog id="dlg">
+  <h2 id="dt"></h2>
+  <p id="dm"></p>
+  <button id="again">Jogar de novo</button>
+</dialog>
+
+<script src="script.js"></script>
+</body>
+</html>
