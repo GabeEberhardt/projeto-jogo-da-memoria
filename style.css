@@ -1,0 +1,102 @@
+/* ========== Cores (variáveis) ========== */
+/* Tema claro por padrão. Para mudar o visual, basta editar estas variáveis. */
+:root{
+  --bg:#f7f6f2;     /* fundo da página */
+  --fg:#1d1d1b;     /* texto e traços */
+  --mut:#85847e;    /* cinza para textos secundários e padrão do verso */
+  --red:#b83a2e;    /* naipes vermelhos e foco do teclado */
+  --card:#fff;      /* fundo da frente da carta */
+  --ok:#e9e8e2;     /* cartas já encontradas e hover */
+  box-sizing:border-box;
+  /* Evita que o conteúdo fique atrás da barra do sistema no celular */
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+
+/* Tema escuro automático, seguindo a preferência do sistema */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#161615;--fg:#ecebe6;--mut:#8b8a84;--red:#ff7b6b;--card:#1e1e1c;--ok:#262624;
+  }
+}
+/* Permite forçar o escuro com <html data-theme="dark"> */
+:root[data-theme="dark"]{
+  --bg:#161615;--fg:#ecebe6;--mut:#8b8a84;--red:#ff7b6b;--card:#1e1e1c;--ok:#262624;
+}
+
+/* ========== Base ========== */
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.5 Georgia,"Times New Roman",serif;
+  min-height:100vh;display:flex;justify-content:center; /* centraliza o jogo */
+}
+main{width:100%;max-width:520px;padding:28px 20px 40px}
+h1{font-size:1.4rem;font-weight:400;margin:0 0 20px;letter-spacing:.01em}
+
+/* ========== Controles ========== */
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+select,button{
+  font:inherit;color:var(--fg);background:transparent;
+  border:1px solid var(--fg);padding:7px 14px;border-radius:0;cursor:pointer;
+}
+button:hover,select:hover{background:var(--ok)}
+/* Contorno visível ao navegar pelo teclado (acessibilidade) */
+button:focus-visible,select:focus-visible,.card:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+#timer{margin-left:auto;font-variant-numeric:tabular-nums} /* números com largura fixa, sem "pular" */
+#hint{color:var(--mut);font-size:.9rem;min-height:1.4em;margin:0 0 14px}
+
+/* ========== Grade e cartas ========== */
+/* O número de colunas é definido pelo JS conforme o nível */
+#grid{display:grid;gap:12px;perspective:900px} /* perspective dá profundidade ao giro */
+
+.card{
+  aspect-ratio:2/3;              /* proporção de carta de baralho */
+  position:relative;cursor:pointer;
+  border:0;padding:0;background:none;
+  transform-style:preserve-3d;   /* mantém frente e verso em 3D */
+  transition:transform .35s;     /* animação de virar */
+}
+.card.on{transform:rotateY(180deg)}   /* carta virada (mostra a frente) */
+.card.done{cursor:default}            /* par já encontrado */
+.card.done .face{background:var(--ok)}
+.card.off{pointer-events:none}        /* bloqueia cliques antes de iniciar */
+
+/* Frente e verso ocupam o mesmo espaço; backface-visibility esconde o lado de trás */
+.face,.back{
+  position:absolute;inset:0;
+  border:1.5px solid var(--fg);border-radius:6px;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+}
+
+/* Verso: hachura diagonal feita só com CSS, mais uma moldura interna */
+.back{background:repeating-linear-gradient(45deg,transparent 0 6px,var(--mut) 6px 6.6px)}
+.back::after{content:"";position:absolute;inset:7px;border:1px solid var(--fg);border-radius:3px}
+
+/* Frente: naipe grande no centro, valor e naipe nos cantos */
+.face{
+  background:var(--card);
+  transform:rotateY(180deg);   /* já nasce "de costas" e gira junto com a carta */
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(2rem,9vw,3rem);line-height:1;
+}
+.face.r{color:var(--red)}      /* copas e ouros */
+.face i{position:absolute;font-style:normal;font-size:clamp(.8rem,3.4vw,1.1rem);line-height:1.1;text-align:center}
+.face i.a{top:7px;left:8px}                          /* canto superior esquerdo */
+.face i.b{bottom:7px;right:8px;transform:rotate(180deg)} /* canto inferior direito, de cabeça para baixo */
+
+/* ========== Diálogo de fim de jogo ========== */
+dialog{border:1.5px solid var(--fg);background:var(--bg);color:var(--fg);padding:28px;max-width:320px;text-align:center;border-radius:6px}
+dialog::backdrop{background:rgba(0,0,0,.45)} /* fundo escurecido atrás do diálogo */
+dialog h2{font-weight:400;margin:0 0 6px;font-size:1.25rem}
+dialog p{margin:0 0 18px;color:var(--mut)}
+
+/* ========== Estatísticas ========== */
+#stats{margin-top:28px;border-top:1px solid var(--mut);padding-top:14px;font-size:.9rem;color:var(--mut)}
+#stats table{width:100%;border-collapse:collapse;color:var(--fg)}
+#stats th,#stats td{text-align:left;padding:4px 0;font-weight:400}
+#stats th{color:var(--mut)}
+
+/* Respeita quem prefere menos animação */
+@media (prefers-reduced-motion:reduce){.card{transition:none}}
